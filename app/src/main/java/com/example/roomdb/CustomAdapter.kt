@@ -7,8 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomdb.model.NoteModel
 
-class CustomAdapter(private val dataSource: List<NoteModel>) :
+class CustomAdapter(private val dataSource: ArrayList<NoteModel>) :
     RecyclerView.Adapter<CustomAdapter.CustomViewHolder>() {
+
+    private var mOnClickListener: OnClickListener? = null
 
     class CustomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title = itemView.findViewById<TextView>(R.id.titleTV)
@@ -24,9 +26,23 @@ class CustomAdapter(private val dataSource: List<NoteModel>) :
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.title.text = dataSource[position].title
         holder.desc.text = dataSource[position].description
+        holder.itemView.setOnClickListener {
+            if (mOnClickListener != null) {
+                mOnClickListener!!.onClick(position, dataSource[position])
+            }
+
+        }
     }
 
     override fun getItemCount(): Int {
-       return dataSource.size
+        return dataSource.size
+    }
+
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.mOnClickListener = onClickListener
+    }
+
+    interface OnClickListener {
+        fun onClick(position: Int, note: NoteModel)
     }
 }
